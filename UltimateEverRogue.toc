@@ -1,0 +1,41 @@
+## Interface: 16001
+## Title: Ultimate EverRogue
+## Notes: Combat frame for health, resource, combo points, range and cooldowns, plus macro manager, player notes and a rogue module.
+## Notes-deDE: Kampfanzeige für Leben, Ressource, Combo-Punkte, Reichweite und Cooldowns, dazu Makro-Manager, Spielernotizen und ein Schurken-Modul.
+## Author: HeartOfD2
+## Version: @project-version@
+## X-License: MIT
+## X-Website: https://github.com/HeartOfD2/Ultimate-EverRogue
+## IconTexture: Interface\AddOns\UltimateEverRogue\Media\Icon
+## Category: Combat
+## Category-deDE: Kampf
+## SavedVariables: UltimateEverRogueDB
+## SavedVariablesPerCharacter: UltimateEverRogueCharDB
+
+Core\Init.lua
+Locales\deDE.lua
+Core\Util.lua
+Core\Database.lua
+Core\Theme.lua
+Core\Widgets.lua
+Core\HUD.lua
+Classes\ClassData.lua
+Core\Elements\Bars.lua
+Core\Elements\ComboPoints.lua
+Core\Elements\Range.lua
+Core\Elements\Cooldowns.lua
+Core\App.lua
+Core\Tools\Transfer.lua
+Core\Tools\SpellSearch.lua
+Core\Tools\Macros.lua
+Core\Tools\Placeholders.lua
+Core\Tools\Templates.lua
+Core\Tools\Notes.lua
+Core\Tools\Stickies.lua
+Core\Tools\Minimap.lua
+Core\Commands.lua
+Core\Pages\Settings.lua
+Modules\Rogue\Rogue.lua
+Modules\Rogue\Poisons.lua
+Modules\Rogue\SliceAndDice.lua
+Modules\Rogue\WeaponMacros.lua
