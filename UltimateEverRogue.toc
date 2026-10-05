@@ -5,6 +5,7 @@
 ## Author: HeartOfD2
 ## Version: @project-version@
 ## X-License: MIT
+## X-Curse-Project-ID: 1729015
 ## X-Website: https://github.com/HeartOfD2/Ultimate-EverRogue
 ## IconTexture: Interface\AddOns\UltimateEverRogue\Media\Icon
 ## Category: Combat
