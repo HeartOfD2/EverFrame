@@ -1,11 +1,11 @@
 -- ---------------------------------------------------------------------------
--- Ultimate EverRogue: namespace, event dispatch, internal messages and the
+-- EverFrame: namespace, event dispatch, internal messages and the
 -- module registry. Every other file builds on what this one sets up.
 -- ---------------------------------------------------------------------------
 local ADDON, ns = ...
 
 ns.ADDON = ADDON
-ns.TITLE = "Ultimate EverRogue"
+ns.TITLE = "EverFrame"
 ns.LOCALE = GetLocale and GetLocale() or "enUS"
 
 do

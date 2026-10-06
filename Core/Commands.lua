@@ -1,6 +1,6 @@
 -- ---------------------------------------------------------------------------
--- Chat commands: /uer (and /everrogue). Modules add their own with
--- ns.AddCommand and their own lines for /uer status with ns.AddStatus.
+-- Chat commands: /ef (and /everframe). Modules add their own with
+-- ns.AddCommand and their own lines for /ef status with ns.AddStatus.
 -- ---------------------------------------------------------------------------
 local _, ns = ...
 local L = ns.L
@@ -9,21 +9,21 @@ local HUD, App = ns.HUD, ns.App
 local commands, order = {}, {}
 local statusLines = {}
 
--- names: list of words that run it; help: shown by /uer help (nil = hidden)
+-- names: list of words that run it; help: shown by /ef help (nil = hidden)
 function ns.AddCommand(names, fn, help)
     local def = { names = names, fn = fn, help = help }
     for _, n in ipairs(names) do commands[n] = def end
     order[#order + 1] = def
 end
 
--- fn() returns a line (or nil) for /uer status
+-- fn() returns a line (or nil) for /ef status
 function ns.AddStatus(fn) statusLines[#statusLines + 1] = fn end
 
 function ns.CommandHelpText()
     local lines = {}
     for _, def in ipairs(order) do
         if def.help then
-            lines[#lines + 1] = ns.Code("/uer " .. def.names[1]) .. "  " .. def.help
+            lines[#lines + 1] = ns.Code("/ef " .. def.names[1]) .. "  " .. def.help
         end
     end
     return table.concat(lines, "\n")
@@ -49,12 +49,12 @@ end, L["put the frame back to its default position"])
 ns.AddCommand({ "scale" }, function(arg)
     local n = tonumber(arg)
     if not n then
-        ns.Print(L["Usage: /uer scale 0.5 - 2.0"])
+        ns.Print(L["Usage: /ef scale 0.5 - 2.0"])
         return
     end
     HUD:SetScale(n)
     ns.Print(L["Scale: %d%%."]:format(math.max(0.5, math.min(2, n)) * 100 + 0.5))
-end, L["frame scale, e.g. /uer scale 1.2"])
+end, L["frame scale, e.g. /ef scale 1.2"])
 ns.AddCommand({ "minimap" }, function()
     ns.SetMinimapButtonShown(not ns.IsMinimapButtonShown())
 end, L["show or hide the minimap button"])
@@ -64,7 +64,7 @@ ns.AddCommand({ "theme" }, function(arg)
     elseif arg == "teal" or arg == "amber" or arg == "blue" then
         ns.SetTheme(nil, arg)
     else
-        ns.Print(L["Usage: /uer theme dark | light | teal | amber | blue"])
+        ns.Print(L["Usage: /ef theme dark | light | teal | amber | blue"])
         return
     end
     ns.Print(L["Theme: %s, %s."]:format(ns.ThemeSettings().mode, ns.ThemeSettings().accent))
@@ -106,9 +106,9 @@ ns.AddCommand({ "help", "?" }, function()
     for line in (ns.CommandHelpText() .. "\n"):gmatch("(.-)\n") do print("   " .. line) end
 end)
 
-SLASH_ULTIMATEEVERROGUE1 = "/uer"
-SLASH_ULTIMATEEVERROGUE2 = "/everrogue"
-SlashCmdList.ULTIMATEEVERROGUE = function(msg)
+SLASH_EVERFRAME1 = "/ef"
+SLASH_EVERFRAME2 = "/everframe"
+SlashCmdList.EVERFRAME = function(msg)
     msg = ns.Trim(msg or "")
     local cmd, arg = msg:match("^(%S*)%s*(.-)$")
     cmd = ns.Fold(cmd or "")
@@ -120,6 +120,6 @@ SlashCmdList.ULTIMATEEVERROGUE = function(msg)
     if def then
         def.fn(arg ~= "" and ns.Fold(arg) or nil)
     else
-        ns.Print(L["Unknown command. /uer help lists all commands."])
+        ns.Print(L["Unknown command. /ef help lists all commands."])
     end
 end

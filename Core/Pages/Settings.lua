@@ -318,6 +318,14 @@ local function BuildLayout(p)
         if tip then UI.Tooltip(row, { label, tip }) end
         return Put(panel, row, 24)
     end
+    -- the part's colored edge (color: Frame); key may be a function (cooldown bars)
+    local function EdgeCheck(panel, key)
+        local function k() return type(key) == "function" and key() or key end
+        local row = UI.CheckRow(panel, L["Colored edge"], function() return HUD:EdgeOn(k()) end,
+            function(v) HUD:Set(k(), "edge", v and true or nil) end, INS_W)
+        UI.Tooltip(row, { L["Colored edge"], L["A 1 px line in the edge color around this part. The color and a switch for all parts: Frame."] })
+        return Put(panel, row, 24)
+    end
     -- bar color: own / class / custom, the swatch shows what the bar uses
     local function ColorRow(panel, key, ownLabel, ownColor)
         Section(panel, L["COLOR"])
@@ -439,7 +447,7 @@ local function BuildLayout(p)
 
     -- frame
     do
-        local panel = Panel("frame", L["Frame"], L["Size, spacing and background. Position: General."])
+        local panel = Panel("frame", L["Frame"], L["Size, spacing, background and edge. Position: General."])
         Put(panel, UI.ValueSlider(panel, L["Width"], 160, 340, 2,
             function() return HUD:FrameGet("width") end,
             function(v) if HUD:FrameGet("width") ~= v then HUD:SetFrame("width", v) end end, INS_W, "%d px"), 38)
@@ -462,6 +470,17 @@ local function BuildLayout(p)
         Put(panel, UI.ValueSlider(panel, L["Opacity"], 10, 100, 5,
             function() return math.floor(HUD:FrameGet("backdropAlpha") * 100 + 0.5) end,
             function(v) HUD:SetFrame("backdropAlpha", v / 100) end, INS_W, "%d%%"), 38)
+        Section(panel, L["EDGE"])
+        local edge = Put(panel, UI.CheckRow(panel, L["Colored edge on every part"],
+            function() return HUD:AllEdges() end,
+            function(v) HUD:SetAllEdges(v) end, INS_W - 58), 0)
+        local edgeSwatch = UI.ColorSwatch(panel, L["Edge color"],
+            function() return HUD:FrameGet("edgeColor") end,
+            function(c) HUD:SetFrame("edgeColor", c) end, function() return T.accent end)
+        edgeSwatch:SetPoint("TOPRIGHT", panel, "TOPRIGHT", 0, panel.y + 1)
+        panel.widgets[#panel.widgets + 1] = edgeSwatch
+        panel.y = panel.y - 26
+        Put(panel, UI.Hint(panel, L["A 1 px line around each bar, point, cooldown icon and tile. Switch it per part in the part's settings; this switch turns all on or off."], INS_W), 44)
         panel.y = panel.y - 10
         Put(panel, UI.Hint(panel, L["Tip: the frame stays visible while this page is open, so you can watch every change."], INS_W), 30)
     end
@@ -470,6 +489,7 @@ local function BuildLayout(p)
     do
         local panel = Panel("health", L["Health"])
         Slider(panel, "health", "height", L["Height"], 10, 36)
+        EdgeCheck(panel, "health")
         ColorRow(panel, "health", L["Default"], function() return T.health end)
         TextBlock(panel, "health", "health", { 300, 471 })
         Section(panel, L["LOW HEALTH"])
@@ -481,6 +501,7 @@ local function BuildLayout(p)
     do
         local panel = Panel("power", L["Resource"], L["Mana, rage or energy: the bar follows your current resource."])
         Slider(panel, "power", "height", L["Height"], 10, 36)
+        EdgeCheck(panel, "power")
         ColorRow(panel, "power", L["Resource color"], function()
             local _, token = UnitPowerType("player")
             return ns.PowerColor(token)
@@ -492,6 +513,7 @@ local function BuildLayout(p)
     do
         local panel = Panel("combo", L["Combo points"])
         Slider(panel, "combo", "height", L["Height"], 6, 24)
+        EdgeCheck(panel, "combo")
         DropRow(panel, "combo", "shape", L["Shape"], {
             { "bars", L["Bars"] }, { "circles", L["Circles"] }, { "diamonds", L["Diamonds"] },
         }, "bars")
@@ -540,15 +562,20 @@ local function BuildLayout(p)
         local panel = Panel("range", L["Range"], L["Distance to your target in bands of your class's abilities."])
         Slider(panel, "range", "height", L["Height"], 12, 28)
         Slider(panel, "range", "textSize", L["Text size"], 8, 16, "%d pt")
+        EdgeCheck(panel, "range")
     end
 
-    -- poison tiles: nothing to style
-    Panel("poisons", L["Poison tracker"], L["The poison tiles have a fixed look. Show, hide and move them in the list."])
+    -- poison tiles: only the edge
+    do
+        local panel = Panel("poisons", L["Poison tracker"], L["The poison tiles have a fixed look. Show, hide and move them in the list."])
+        EdgeCheck(panel, "poisons")
+    end
 
     -- cooldown bars: one shared look
     do
         local panel = Panel("cooldowns", "", L["These settings apply to all cooldown bars."])
         Slider(panel, "cooldowns", "iconSize", L["Icon size"], 20, 40)
+        EdgeCheck(panel, function() return selected end)
         Check(panel, "cooldowns", "numbers", L["Countdown numbers on the icons"])
         Check(panel, "cooldowns", "dimReady", L["Dim icons that are ready"],
             L["Only cooldowns that are running stand out."])
@@ -567,7 +594,10 @@ local function BuildLayout(p)
     end
 
     local resetPart = UI.Button(p, 150, L["Default look"], function()
-        HUD:ResetStyle(HUD.byKey[selected] and HUD.byKey[selected].cooldownBar and "cooldowns" or selected)
+        if HUD.byKey[selected] and HUD.byKey[selected].cooldownBar then
+            HUD:ResetStyle("cooldowns")   -- the shared look, and this bar's own edge
+        end
+        HUD:ResetStyle(selected)
         refresh.layout()
         Status(L["Default look restored."])
     end)
@@ -955,7 +985,7 @@ local function BuildAbout(p)
     UI.Label(p, L["CREDITS"], 0, -150)
     local credits = UI.Hint(p, table.concat({
         L["Author: %s"]:format("HeartOfD2"),
-        L["License: MIT  ·  Source: github.com/HeartOfD2/Ultimate-EverRogue"],
+        L["License: MIT  ·  Source: github.com/HeartOfD2/EverFrame"],
         L["Inspired by %s by %s"]:format("RogueEnergyCombo", "Goldfire86"),
     }, "\n"), CW)
     credits:SetPoint("TOPLEFT", 0, -168)

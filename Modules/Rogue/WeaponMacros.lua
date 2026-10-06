@@ -21,11 +21,11 @@ local Placeholders = ns.Placeholders
 local DAGGER = 15   -- Enum.ItemWeaponSubclass.Dagger
 local TARGETS = "[@mouseover,harm,nodead][@focus,harm,nodead][] "
 local QUESTION = Macros.QUESTION_ICON
-local SUFFIX = " UER"
+local SUFFIX = " EF!"
 local SPELLS = { backstab = 53, ambush = 8676, sinister = 1752, kick = 1766, blind = 2094, gouge = 1776 }
 
--- "<spell> UER" from the client's spell name; too long for a macro name
--- (16 letters): the first words that fit ("Sinister UER")
+-- "<spell> EF!" from the client's spell name; too long for a macro name
+-- (16 letters): the first words that fit ("Sinister EF!")
 local function SpellMacroName(id)
     local s = ns.SpellName(id)
     if type(s) ~= "string" or s == "" or ns.IsSecret(s) then return ("%d"):format(id) .. SUFFIX end
@@ -41,25 +41,14 @@ local function SpellMacroName(id)
     return out .. SUFFIX
 end
 
--- macro names: "UER" at the end, the spells in the game language
+-- macro names: "EF!" at the end, the spells in the game language
 local function Names()
     local n = {
         dagger = "W1 MH" .. SUFFIX, weapon = "W2 MH" .. SUFFIX,
-        poisonMH = L["Poison MH UER"], poisonOH = L["Poison OH UER"],
+        poisonMH = L["Poison MH"] .. SUFFIX, poisonOH = L["Poison OH"] .. SUFFIX,
     }
     for key, id in pairs(SPELLS) do n[key] = SpellMacroName(id) end
     return n
-end
--- names used before: such macros are renamed once (action bars keep them);
--- ns.OLD_MACRO_NAMES adds the names only a translation had
-local OLD_NAMES = {
-    dagger = { L["UER Dagger MH"], L["Dagger MH UER"] }, weapon = { L["UER Weapon MH"], L["Weapon MH UER"] },
-    backstab = { L["UER Backstab"] }, ambush = { L["UER Ambush"] }, sinister = { L["UER Sinister"], L["Sinister UER"] },
-    kick = { L["UER Kick"] }, blind = { L["UER Blind"] }, gouge = { L["UER Gouge"] },
-    poisonMH = { L["UER Poison MH"] }, poisonOH = { L["UER Poison OH"] },
-}
-for key, list in pairs(ns.OLD_MACRO_NAMES or {}) do
-    for _, old in ipairs(list) do table.insert(OLD_NAMES[key], old) end
 end
 
 -- the weapon that goes into the main hand unless an ability needs a dagger
@@ -477,33 +466,5 @@ Placeholders.RegisterUpdater(function() if Rogue:IsActive() then Update() end en
 ns.RegisterEvent("UPDATE_MACROS", function() if App:IsOpen("weaponMacros") and RefreshPage then RefreshPage() end end)
 ns.RegisterEvent("BAG_UPDATE", function() if App:IsOpen("weaponMacros") and RefreshPage then RefreshPage() end end)
 ns.RegisterEvent("PLAYER_EQUIPMENT_CHANGED", function() if App:IsOpen("weaponMacros") and RefreshPage then RefreshPage() end end)
-
--- the old names ("UER ..." in front) become the new ones, once; renaming
--- keeps the macros on the action bars
-local function RenameOld()
-    if not Rogue:IsActive() then return end
-    if ns.InCombat() then Placeholders.AfterCombat("rogueRename", RenameOld) return end
-    local renamed = {}
-    local NAMES = Names()
-    for key, olds in pairs(OLD_NAMES) do
-        local new = Macros.ShortName(NAMES[key])
-        for _, old in ipairs(olds) do
-            old = Macros.ShortName(old)
-            if #Macros.IndicesByName(new) == 0 then
-                for _ = 1, 4 do
-                    local idx = Macros.IndicesByName(old)[1]
-                    if not idx or not pcall(EditMacro, idx, new) then break end
-                    renamed[#renamed + 1] = new
-                end
-            end
-        end
-    end
-    if #renamed > 0 then
-        ns.Print(L["Rogue macros renamed: %s"]:format(table.concat(renamed, ", ")))
-        Macros.Reload()
-    end
-end
-Rogue.RenameOldMacros = RenameOld
-ns.On("LOGIN", function() C_Timer.After(2, RenameOld) end)
 
 ns.AddCommand({ "defaults" }, function() CreateMissing() end, L["rogue: create the missing weapon macros"])

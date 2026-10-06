@@ -13,7 +13,7 @@ local W, GAP = 220, 4
 local HUD = { elements = {}, byKey = {}, WIDTH = W, GAP = GAP }
 ns.HUD = HUD
 
-local f = CreateFrame("Frame", "UERHUD", UIParent)
+local f = CreateFrame("Frame", "EverFrameHUD", UIParent)
 f:SetSize(W, 40)
 -- optional backdrop behind the whole stack
 f.backdrop = CreateFrame("Frame", nil, f)
@@ -52,9 +52,66 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Look: per part (def.style = defaults, saved in style.parts[key]) and for
--- the whole frame (width, spacing, backdrop). Changes apply right away.
+-- the whole frame (width, spacing, backdrop, edge). Changes apply right away.
 -- ---------------------------------------------------------------------------
 HUD.FRAME_DEFAULTS = { width = W, gap = GAP, backdrop = false, backdropAlpha = T.hudBackdrop[4] }
+
+-- Edge: every part inside the frame (bars, combo points, range, each
+-- cooldown icon, poison tiles) has a 1 px line around it, black by default.
+-- Per part ("edge" in its style) it takes the edge color of the frame.
+-- Parts hand in their skinned frames (HUD:AddEdge) or a shaped edge texture
+-- (HUD:AddEdgeTexture) with their key; others paint with HUD:EdgeColor(key)
+-- and register a repaint with HUD:OnEdges(fn).
+HUD.edgeFrames, HUD.edgeTextures, HUD.edgeHooks = {}, {}, {}
+
+function HUD:EdgeOn(key) return self:Get(key, "edge") == true end
+
+function HUD:EdgeColor(key)
+    if key and self:EdgeOn(key) then return self:FrameGet("edgeColor") or T.accent end
+    return T.hudLine
+end
+
+function HUD:AddEdge(frame, key)
+    frame.edgeKey = key
+    table.insert(self.edgeFrames, frame)
+    frame.baseEdge = self:EdgeColor(key)
+    ns.SetEdgeColor(frame)
+end
+
+function HUD:AddEdgeTexture(tex, key)
+    tex.edgeKey = key
+    table.insert(self.edgeTextures, tex)
+    tex:SetVertexColor(unpack(self:EdgeColor(key)))
+end
+
+function HUD:OnEdges(fn) table.insert(self.edgeHooks, fn) end
+
+function HUD:ApplyEdges()
+    for _, fr in ipairs(self.edgeFrames) do
+        fr.baseEdge = self:EdgeColor(fr.edgeKey)
+        ns.SetEdgeColor(fr)
+    end
+    for _, t in ipairs(self.edgeTextures) do t:SetVertexColor(unpack(self:EdgeColor(t.edgeKey))) end
+    for _, fn in ipairs(self.edgeHooks) do ns.SafeCall(fn) end
+end
+
+-- Layout > Frame: all parts at once. On when every part has its edge on.
+function HUD:AllEdges()
+    for _, def in ipairs(self.elements) do
+        if not self:EdgeOn(def.key) then return false end
+    end
+    return #self.elements > 0
+end
+
+function HUD:SetAllEdges(on)
+    local parts = ns.Char().style.parts
+    for _, def in ipairs(self.elements) do
+        parts[def.key] = parts[def.key] or {}
+        parts[def.key].edge = on and true or nil
+    end
+    self:ApplyEdges()
+    ns.Fire("HUD_STYLE_CHANGED", "frame", "edge")
+end
 
 function HUD:Get(key, field)
     local saved = ns.Char().style.parts[key]
@@ -72,6 +129,7 @@ function HUD:Set(key, field, value)
     local def = self.byKey[key]
     if def and def.ApplyStyle then def:ApplyStyle() end
     if self.sharedApply[key] then self.sharedApply[key]() end
+    if field == "edge" then self:ApplyEdges() end
     self:ApplyLayout()
     ns.Fire("HUD_STYLE_CHANGED", key, field)
 end
@@ -96,6 +154,7 @@ function HUD:ApplyFrameStyle()
     f.backdrop:SetShown(self:FrameGet("backdrop") and true or false)
     local c = self:FrameGet("backdropColor") or T.hudBackdrop
     ns.SetFill(f.backdrop, { c[1], c[2], c[3], self:FrameGet("backdropAlpha") })
+    self:ApplyEdges()
     for _, def in ipairs(self.elements) do
         if def.ApplyStyle then ns.SafeCall(def.ApplyStyle, def) end
     end
@@ -327,7 +386,7 @@ ns.Color(f.mover.center.label, T.accent)
 
 function HUD:UpdateMover()
     local h = Settings()
-    f.mover.text:SetText(h.centerX and L["Drag up or down  ·  /uer lock"] or L["Drag to move  ·  /uer lock"])
+    f.mover.text:SetText(h.centerX and L["Drag up or down  ·  /ef lock"] or L["Drag to move  ·  /ef lock"])
     f.mover.center:Refresh()
 end
 

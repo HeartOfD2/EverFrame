@@ -129,6 +129,7 @@ local function MakeTile(hand)
     local c = CreateFrame("Frame", nil, HUD.frame)
     c:SetSize((HUD.WIDTH - HUD.GAP) / 2, TILE_H)
     ns.Skin(c, T.hudPanel, T.hudLine)
+    HUD:AddEdge(c, "poisons")
     c.label = ns.HudText(c, 11)
     c.label:SetPoint("LEFT", TILE_H + 1, 0)
     c.label:SetTextColor(unpack(T.hudMuted))
@@ -143,11 +144,12 @@ end
 local OpenChoice
 
 local function MakeButton(hand, tile)
-    local b = CreateFrame("Button", "UERPoison" .. hand, HUD.frame, "SecureActionButtonTemplate")
+    local b = CreateFrame("Button", "EverFramePoison" .. hand, HUD.frame, "SecureActionButtonTemplate")
     b:SetSize(TILE_H - 6, TILE_H - 6)
     b:SetFrameLevel(tile:GetFrameLevel() + 2)
     b:RegisterForClicks("AnyDown")   -- this client only runs secure actions on press
     ns.Skin(b, T.hudTrack, T.hudLine)
+    HUD:AddEdge(b, "poisons")
     b.icon = b:CreateTexture(nil, "ARTWORK")
     b.icon:SetAllPoints()
     b.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)

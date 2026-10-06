@@ -184,7 +184,7 @@ function Notes.OnChange(fn) listeners[#listeners + 1] = fn end
 -- ---------------------------------------------------------------------------
 local layers = {}
 function Notes.Layer(key)
-    local f = CreateFrame("Frame", "UERNotesLayer_" .. key, UIParent)
+    local f = CreateFrame("Frame", "EverFrameNotesLayer_" .. key, UIParent)
     f:SetAllPoints(UIParent)
     layers[key] = f
     return f
@@ -248,7 +248,7 @@ local COMPACT_H = 30
 local POPUP_DEF = { point = "CENTER", x = 260, y = 120, w = 280, h = 170 }
 local POPUP_MIN_W, POPUP_MIN_H = 220, 120
 
-local pop = UI.Window("UERTargetNote", POPUP_DEF.w, POPUP_DEF.h, "", { noEscape = true, fixed = true })
+local pop = UI.Window("EverFrameTargetNote", POPUP_DEF.w, POPUP_DEF.h, "", { noEscape = true, fixed = true })
 local popLayer = Notes.Layer("popup")
 pop:SetParent(popLayer)
 pop:SetFrameStrata("MEDIUM")
@@ -328,7 +328,7 @@ end, "ANCHOR_TOP")
 function pop:UpdateLock()
     local locked = self:IsLocked()
     local c = locked and T.accent or T.muted
-    self.lockBtn.icon:SetTexture("Interface\\AddOns\\UltimateEverRogue\\Media\\" .. (locked and "Lock" or "Unlock"))
+    self.lockBtn.icon:SetTexture("Interface\\AddOns\\" .. ns.ADDON .. "\\Media\\" .. (locked and "Lock" or "Unlock"))
     self.lockBtn.icon:SetVertexColor(c[1], c[2], c[3], 1)
     self.grip:SetShown(not locked and not self.compact)
 end
@@ -528,7 +528,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Notes page: Notebook (groups) and Players, both as a tree + editor
 -- ---------------------------------------------------------------------------
-local page = CreateFrame("Frame", "UERNotes", UIParent)
+local page = CreateFrame("Frame", "EverFrameNotes", UIParent)
 page:SetSize(App.CONTENT_W, App.CONTENT_H)
 page:Hide()
 local function Status(msg, alert) App.Status(msg, alert) end
@@ -1178,7 +1178,7 @@ local transfer = ns.Transfer.Build(page, {
         exportTitle = L["Export notes"],
         importTitle = L["Import notes"],
         empty = L["No notes yet."],
-        invalid = L["That is no notes code (it starts with UERN1:)."],
+        invalid = L["That is no notes code (it starts with EFN1:)."],
         found = L["%d notes in the code. Untick what you don't want."],
         clashTitle = L["Notes exist already"],
         clashText = L["These notes exist already (same group or player, same title):\n%s\n\nOverwrite their text with the imported one?"],

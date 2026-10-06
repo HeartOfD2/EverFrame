@@ -1,8 +1,8 @@
 -- ---------------------------------------------------------------------------
 -- Saved settings.
---   UltimateEverRogueDB       account-wide: notes, minimap button, templates
---   UltimateEverRogueCharDB   per character: HUD, layout, cooldowns, texts,
---                             modules (each character has its own class)
+--   EverFrameDB       account-wide: notes, minimap button, templates
+--   EverFrameCharDB   per character: HUD, layout, cooldowns, texts,
+--                     modules (each character has its own class)
 -- Reset categories are registered here; the options' Reset tab lists them.
 -- ---------------------------------------------------------------------------
 local _, ns = ...
@@ -45,12 +45,12 @@ local function Merge(saved, defaults)
 end
 
 function ns.InitDatabase()
-    if type(UltimateEverRogueDB) ~= "table" then UltimateEverRogueDB = {} end
-    if type(UltimateEverRogueCharDB) ~= "table" then UltimateEverRogueCharDB = {} end
-    Merge(UltimateEverRogueDB, AcctDefaults())
-    Merge(UltimateEverRogueCharDB, CharDefaults())
+    if type(EverFrameDB) ~= "table" then EverFrameDB = {} end
+    if type(EverFrameCharDB) ~= "table" then EverFrameCharDB = {} end
+    Merge(EverFrameDB, AcctDefaults())
+    Merge(EverFrameCharDB, CharDefaults())
     -- 1.0 had a single "hide out of combat" switch
-    local h = UltimateEverRogueCharDB.hud
+    local h = EverFrameCharDB.hud
     if h.hideOOC ~= nil then
         if h.hideOOC then h.hide = "combat" end
         h.hideOOC = nil
@@ -60,12 +60,12 @@ end
 -- before ADDON_LOADED (only during file load) the defaults stand in
 local fallbackChar, fallbackAcct
 function ns.Char()
-    if type(UltimateEverRogueCharDB) == "table" and ns.dbReady then return UltimateEverRogueCharDB end
+    if type(EverFrameCharDB) == "table" and ns.dbReady then return EverFrameCharDB end
     fallbackChar = fallbackChar or CharDefaults()
     return fallbackChar
 end
 function ns.Acct()
-    if type(UltimateEverRogueDB) == "table" and ns.dbReady then return UltimateEverRogueDB end
+    if type(EverFrameDB) == "table" and ns.dbReady then return EverFrameDB end
     fallbackAcct = fallbackAcct or AcctDefaults()
     return fallbackAcct
 end

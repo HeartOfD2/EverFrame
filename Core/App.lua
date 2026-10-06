@@ -14,7 +14,7 @@ local UI = ns.UI
 
 local APP_W, APP_H = 820, 540
 local HEADER_H, FOOTER_H, SIDEBAR_W, PAD = 48, 28, 196, 16
-local NAV_H = 26
+local NAV_H, NAV_HEAD_H = 28, 26
 
 local App = {
     pages = {}, byKey = {}, sections = {},
@@ -41,6 +41,7 @@ function App:AddPage(def)
 end
 
 local function Visible(def) return not def.IsVisible or def.IsVisible() end
+
 local function SectionLabel(key)
     for _, s in ipairs(App.sections) do if s.key == key then return s.label end end
     return ""
@@ -85,7 +86,7 @@ end
 
 local function Build()
     if win then return end
-    win = CreateFrame("Frame", "UERApp", UIParent)
+    win = CreateFrame("Frame", "EverFrameApp", UIParent)
     win:SetFrameStrata("DIALOG")
     win:SetToplevel(true)
     win:EnableMouse(true)
@@ -95,7 +96,7 @@ local function Build()
     if win.SetResizeBounds then win:SetResizeBounds(APP_W, APP_H, 1600, 1100) end
     win:Hide()
     ns.Skin(win, T.window)
-    table.insert(UISpecialFrames, "UERApp")
+    table.insert(UISpecialFrames, "EverFrameApp")
 
     -- header ------------------------------------------------------------------
     local header = CreateFrame("Frame", nil, win)
@@ -171,7 +172,7 @@ local function Build()
     local version = ns.Text(footer, 11)
     version:SetPoint("RIGHT", -30, 0)
     ns.Color(version, T.muted)
-    version:SetText(("%s  ·  /uer"):format(ns.VERSION))
+    version:SetText(("%s  ·  /ef"):format(ns.VERSION))
     statusText = ns.Text(footer, 11)
     statusText:SetPoint("LEFT", SIDEBAR_W + PAD, 0)
     statusText:SetPoint("RIGHT", version, "LEFT", -12, 0)
@@ -200,6 +201,12 @@ local function Build()
     sline:SetWidth(1)
     ns.Color(sline, T.divider)
     navButtons = {}
+    -- name and version at the bottom of the sidebar
+    sidebar.foot = ns.Text(sidebar, 10)
+    sidebar.foot:SetPoint("BOTTOMLEFT", 16, 10)
+    sidebar.foot:SetPoint("BOTTOMRIGHT", -12, 10)
+    sidebar.foot:SetJustifyH("LEFT")
+    ns.Color(sidebar.foot, T.muted)
 
     -- content -----------------------------------------------------------------
     content = CreateFrame("Frame", nil, win)
@@ -222,25 +229,39 @@ end
 -- ---------------------------------------------------------------------------
 -- Navigation
 -- ---------------------------------------------------------------------------
+-- one pool for section headings and page entries:
+--   heading  accent mark, muted capitals, a line underneath
+--   entry    its label; the open page sits in a box with an accent mark
 local function NavButton(i)
     local b = navButtons[i]
     if b then return b end
     b = CreateFrame("Button", nil, sidebar)
     b:SetHeight(NAV_H)
-    b.bg = b:CreateTexture(nil, "BACKGROUND", nil, 1)
-    b.bg:SetAllPoints()
+    b.bg = b:CreateTexture(nil, "BACKGROUND", nil, 1)       -- box of the open page
+    b.bg:SetPoint("TOPLEFT", 10, -1)
+    b.bg:SetPoint("BOTTOMRIGHT", -10, 1)
     ns.Color(b.bg, T.accentSoft)
-    b.mark = b:CreateTexture(nil, "ARTWORK")
-    b.mark:SetPoint("TOPLEFT")
-    b.mark:SetPoint("BOTTOMLEFT")
-    b.mark:SetWidth(3)
+    b.edge = {}
+    for k = 1, 4 do
+        b.edge[k] = b:CreateTexture(nil, "BACKGROUND", nil, 2)
+        ns.Color(b.edge[k], T.line)
+    end
+    b.edge[1]:SetPoint("TOPLEFT", b.bg)    b.edge[1]:SetPoint("TOPRIGHT", b.bg)    b.edge[1]:SetHeight(1)
+    b.edge[2]:SetPoint("BOTTOMLEFT", b.bg) b.edge[2]:SetPoint("BOTTOMRIGHT", b.bg) b.edge[2]:SetHeight(1)
+    b.edge[3]:SetPoint("TOPRIGHT", b.bg)   b.edge[3]:SetPoint("BOTTOMRIGHT", b.bg) b.edge[3]:SetWidth(1)
+    b.mark = b:CreateTexture(nil, "ARTWORK")                 -- accent: open page, or a heading
     ns.Color(b.mark, T.accent)
     b.hl = b:CreateTexture(nil, "HIGHLIGHT")
-    b.hl:SetAllPoints()
+    b.hl:SetPoint("TOPLEFT", 10, -1)
+    b.hl:SetPoint("BOTTOMRIGHT", -10, 1)
     ns.Color(b.hl, T.hover)
+    b.line = b:CreateTexture(nil, "ARTWORK")                -- under a heading
+    b.line:SetPoint("BOTTOMLEFT", 12, 0)
+    b.line:SetPoint("BOTTOMRIGHT", -12, 0)
+    b.line:SetHeight(1)
+    ns.Color(b.line, T.divider)
     b.text = ns.Text(b, 12)
-    b.text:SetPoint("LEFT", 16, 0)
-    b.text:SetPoint("RIGHT", -8, 0)
+    b.text:SetPoint("RIGHT", -14, 0)
     b.text:SetJustifyH("LEFT")
     b.text:SetWordWrap(false)
     b:SetScript("OnClick", function(self)
@@ -250,9 +271,17 @@ local function NavButton(i)
     return b
 end
 
+local function Place(b, y, h)
+    b:ClearAllPoints()
+    b:SetPoint("TOPLEFT", 0, y)
+    b:SetPoint("TOPRIGHT", -1, y)
+    b:SetHeight(h)
+    b:Show()
+end
+
 function App:RenderNav()
     if not win then return end
-    local i, y = 0, -12
+    local i, y = 0, -8
     for _, s in ipairs(self.sections) do
         local any = false
         for _, def in ipairs(self.pages) do
@@ -263,40 +292,46 @@ function App:RenderNav()
             local h = NavButton(i)
             h.pageKey = nil
             h:EnableMouse(false)
-            h:ClearAllPoints()
-            h:SetPoint("TOPLEFT", 0, y)
-            h:SetPoint("TOPRIGHT", -1, y)
-            h:SetHeight(22)
+            Place(h, y, NAV_HEAD_H)
             h.text:SetText(ns.Muted(s.label))
             ns.ApplyFont(h.text, 10, "")
+            h.text:SetPoint("LEFT", 22, -1)
+            h.mark:ClearAllPoints()
+            h.mark:SetPoint("LEFT", 14, -1)
+            h.mark:SetSize(2, 11)
+            h.mark:Show()
+            h.line:Show()
             h.bg:Hide()
-            h.mark:Hide()
-            h:Show()
-            y = y - 22
+            for _, e in ipairs(h.edge) do e:Hide() end
+            y = y - NAV_HEAD_H - 4
             for _, def in ipairs(self.pages) do
                 if def.section == s.key and Visible(def) then
                     i = i + 1
                     local b = NavButton(i)
                     b.pageKey = def.key
                     b:EnableMouse(true)
-                    b:ClearAllPoints()
-                    b:SetPoint("TOPLEFT", 0, y)
-                    b:SetPoint("TOPRIGHT", -1, y)
-                    b:SetHeight(NAV_H)
+                    Place(b, y, NAV_H)
                     b.text:SetText(def.label)
-                    ns.ApplyFont(b.text, 13, "")
+                    ns.ApplyFont(b.text, 12, "")
+                    b.text:SetPoint("LEFT", 22, 0)
+                    b.line:Hide()
                     local on = def.key == current
                     b.bg:SetShown(on)
+                    for _, e in ipairs(b.edge) do e:SetShown(on) end
+                    b.mark:ClearAllPoints()
+                    b.mark:SetPoint("TOPLEFT", b.bg)
+                    b.mark:SetPoint("BOTTOMLEFT", b.bg)
+                    b.mark:SetWidth(2)
                     b.mark:SetShown(on)
                     b.text:SetTextColor(unpack(on and T.accent or T.text))
-                    b:Show()
                     y = y - NAV_H
                 end
             end
-            y = y - 10
+            y = y - 8
         end
     end
     for j = i + 1, #navButtons do navButtons[j]:Hide() end
+    sidebar.foot:SetText(ns.TITLE .. " " .. ns.VERSION .. "  ·  Forever")
 end
 
 -- ---------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 --                 cooldown frame displays it without us touching the value
 --   3. estimate   no readable aura: 6 + 3 seconds per combo point, plus 15%
 --                 per Improved Slice and Dice rank, read from the talents
--- There is no setting for any of it; /uer status shows the path in use.
+-- There is no setting for any of it; /ef status shows the path in use.
 -- ---------------------------------------------------------------------------
 local _, ns = ...
 local L = ns.L

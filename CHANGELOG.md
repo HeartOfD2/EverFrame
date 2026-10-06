@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.0 (Beta)
+
+**Ultimate EverRogue is now EverFrame – Compact Combat Frame with Extras.** The addon works for every class; the rogue features stay as a module.
+
+- New logo: the combat frame itself, in the addon list, on the minimap button and on the About page.
+- New folder `EverFrame`: delete the old `UltimateEverRogue` folder. EverFrame starts with fresh settings (settings, notes and templates of Ultimate EverRogue are not taken over).
+- Chat command `/ef` (or `/everframe`).
+- Rogue macros end in "EF!" now ("W1 MH EF!", "Backstab EF!" ...). Create them again on the Rogue page and put them on your action bars; old macros ending in "UER" are left alone, you can delete them.
+- Export codes start with `EF2:`, `EFM1:` and `EFN1:`. Codes from Ultimate EverRogue no longer import.
+- Colored edge: a 1 px line around the bars, each combo point (any shape), the range display, each cooldown icon and the poison tiles. Switch it per part (each cooldown bar on its own) in the Layout tab; Frame holds the color and a switch for all parts.
+- New in-game screenshots in the gallery.
+
 ## 0.9.0 (Beta)
 
 First public release of Ultimate EverRogue for World of Warcraft: Forever.

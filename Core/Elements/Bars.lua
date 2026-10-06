@@ -9,12 +9,13 @@ local _, ns = ...
 local L, T = ns.L, ns.T
 local HUD = ns.HUD
 
-local function MakeBar(parent, color, textSize)
+local function MakeBar(parent, color, textSize, key)
     local bar = CreateFrame("StatusBar", nil, parent)
     bar:SetStatusBarTexture(ns.WHITE)
     bar:GetStatusBarTexture():SetDrawLayer("ARTWORK", 1)
     bar:SetStatusBarColor(color[1], color[2], color[3])
     ns.Skin(bar, T.hudTrack, T.hudLine)
+    ns.HUD:AddEdge(bar, key)
     local shade = bar:CreateTexture(nil, "ARTWORK", nil, 5)   -- over fill and track alike
     shade:SetAllPoints()
     ns.Gradient(shade, 0, 0, 0, 0.38, 0, 0, 0, 0)
@@ -28,7 +29,7 @@ local function MakeBar(parent, color, textSize)
     return bar
 end
 
--- which formatting path the last update took (shown in the layout editor and /uer status)
+-- which formatting path the last update took (shown in the layout editor and /ef status)
 ns.textModes = {}
 
 -- the bar color a style asks for: "default" (the part's own), "class", "custom"
@@ -70,7 +71,7 @@ local health = HUD:Register({
     style = { height = 18, colorMode = "default", textSize = 12, textAlign = "CENTER", showText = true,
               warn = true, warnPct = 30 },
     Build = function(self, parent)
-        local bar = MakeBar(parent, T.health, 12)
+        local bar = MakeBar(parent, T.health, 12, "health")
         -- warning zone: the left 30% of the empty track glows red. It sits under
         -- the fill, so it only shows once health drops below it -- the game
         -- draws that comparison, we never touch the (secret) value
@@ -147,7 +148,7 @@ local power = HUD:Register({
     label = L["Resource bar"],
     style = { height = 20, colorMode = "default", textSize = 13, textAlign = "CENTER", showText = true },
     Build = function(self, parent)
-        local bar = MakeBar(parent, ns.PowerColor("ENERGY"), 13)
+        local bar = MakeBar(parent, ns.PowerColor("ENERGY"), 13, "power")
         -- crisp leading edge riding the end of the fill (anchored: no value math)
         bar.spark = bar:CreateTexture(nil, "ARTWORK", nil, 7)
         bar.spark:SetColorTexture(1, 1, 1, 0.5)

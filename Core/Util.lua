@@ -267,12 +267,17 @@ function ns.Base64Decode(text)
 end
 
 -- ---------------------------------------------------------------------------
--- Macro templates as one line of text: "UER2:" + Base64 (name, description,
--- icon, text, group; "UER1:" codes have no group and still import). Inside,
--- fields are split by ASCII unit/record separators, never found in macro text.
+-- Macro templates as one line of text: "EF2:" + Base64 (name, description,
+-- icon, text, group). Inside, fields are split by ASCII unit/record
+-- separators, never found in macro text.
 -- ---------------------------------------------------------------------------
-local TPL_PREFIX, TPL_PREFIX_V1 = "UER2:", "UER1:"
+local TPL_PREFIX = "EF2:"
 local FIELD, RECORD = "\31", "\30"
+
+-- the Base64 part after the prefix, or nil
+local function AfterPrefix(text, prefix)
+    if text:sub(1, #prefix) == prefix then return text:sub(#prefix + 1) end
+end
 
 local function Clean(s) return (tostring(s or ""):gsub("[\30\31]", "")) end
 
@@ -287,30 +292,24 @@ end
 -- list of { name, desc, icon, body, group }, or nil + reason
 function ns.DecodeTemplates(text)
     text = ns.Trim(text)
-    local fields
-    if text:sub(1, #TPL_PREFIX) == TPL_PREFIX then
-        fields = 5
-    elseif text:sub(1, #TPL_PREFIX_V1) == TPL_PREFIX_V1 then
-        fields = 4
-    else
-        return nil, "prefix"
-    end
-    local data = ns.Base64Decode(text:sub(#TPL_PREFIX + 1))
+    local rest = AfterPrefix(text, TPL_PREFIX)
+    if not rest then return nil, "prefix" end
+    local data = ns.Base64Decode(rest)
     if not data or data == "" then return nil, "data" end
     local list = {}
     for record in (data .. RECORD):gmatch("(.-)" .. RECORD) do
         local f = {}
         for field in (record .. FIELD):gmatch("(.-)" .. FIELD) do f[#f + 1] = field end
-        if #f ~= fields or ns.Trim(f[1]) == "" then return nil, "data" end
-        local group = f[5] and ns.Trim(f[5]) or ""
+        if #f ~= 5 or ns.Trim(f[1]) == "" then return nil, "data" end
+        local group = ns.Trim(f[5])
         list[#list + 1] = { name = ns.Utf8Sub(ns.Trim(f[1]), 16), desc = f[2], icon = tonumber(f[3]) or (f[3] ~= "" and f[3] or nil),
                             body = ns.Utf8Sub(f[4], 255), group = group ~= "" and group or nil }
     end
     return list
 end
 
--- WoW macros the same way: "UERM1:" + Base64 (name, icon, text, group)
-local MACRO_PREFIX = "UERM1:"
+-- WoW macros the same way: "EFM1:" + Base64 (name, icon, text, group)
+local MACRO_PREFIX = "EFM1:"
 
 function ns.EncodeMacros(list)
     local records = {}
@@ -323,8 +322,9 @@ end
 -- list of { name, icon, body, group }, or nil + reason
 function ns.DecodeMacros(text)
     text = ns.Trim(text)
-    if text:sub(1, #MACRO_PREFIX) ~= MACRO_PREFIX then return nil, "prefix" end
-    local data = ns.Base64Decode(text:sub(#MACRO_PREFIX + 1))
+    local rest = AfterPrefix(text, MACRO_PREFIX)
+    if not rest then return nil, "prefix" end
+    local data = ns.Base64Decode(rest)
     if not data or data == "" then return nil, "data" end
     local list = {}
     for record in (data .. RECORD):gmatch("(.-)" .. RECORD) do
@@ -338,10 +338,10 @@ function ns.DecodeMacros(text)
     return list
 end
 
--- Notes the same way: "UERN1:" + Base64; one record per note with
+-- Notes the same way: "EFN1:" + Base64; one record per note with
 -- kind ("g" = notebook group, "p" = player), its group name or Name-Realm,
 -- group color or class, title, text, created and updated time
-local NOTES_PREFIX = "UERN1:"
+local NOTES_PREFIX = "EFN1:"
 
 function ns.EncodeNotes(list)
     local records = {}
@@ -355,8 +355,9 @@ end
 -- list of { kind, owner, extra, title, text, created, updated }, or nil + reason
 function ns.DecodeNotes(text)
     text = ns.Trim(text)
-    if text:sub(1, #NOTES_PREFIX) ~= NOTES_PREFIX then return nil, "prefix" end
-    local data = ns.Base64Decode(text:sub(#NOTES_PREFIX + 1))
+    local rest = AfterPrefix(text, NOTES_PREFIX)
+    if not rest then return nil, "prefix" end
+    local data = ns.Base64Decode(rest)
     if not data or data == "" then return nil, "data" end
     local list = {}
     for record in (data .. RECORD):gmatch("(.-)" .. RECORD) do

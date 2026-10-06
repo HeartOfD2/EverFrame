@@ -374,7 +374,7 @@ end
 -- ---------------------------------------------------------------------------
 do
     local ROW_H, PAD = 20, 4
-    local menu = CreateFrame("Frame", "UERMenu", UIParent)
+    local menu = CreateFrame("Frame", "EverFrameMenu", UIParent)
     menu:SetFrameStrata("TOOLTIP")
     menu:EnableMouse(true)
     menu:Hide()
@@ -560,7 +560,7 @@ end
 -- get() -> color or nil (= default), set(color or nil); fallback = the default
 -- ---------------------------------------------------------------------------
 do
-    local pop = CreateFrame("Frame", "UERColorPopover", UIParent)
+    local pop = CreateFrame("Frame", "EverFrameColorPopover", UIParent)
     pop:SetFrameStrata("TOOLTIP")
     pop:EnableMouse(true)
     pop:Hide()
@@ -693,7 +693,7 @@ end
 -- buttons = { { label, fn, primary }, ... } up to three, right-aligned
 -- ---------------------------------------------------------------------------
 do
-    local box = CreateFrame("Frame", "UERMessageBox", UIParent)
+    local box = CreateFrame("Frame", "EverFrameMessageBox", UIParent)
     box:SetSize(400, 190)
     box:SetPoint("CENTER", UIParent, "CENTER", 0, 180)
     box:SetFrameStrata("FULLSCREEN_DIALOG")   -- above the app window (DIALOG)
@@ -710,7 +710,7 @@ do
     strip:SetPoint("TOPRIGHT")
     strip:SetHeight(2)
     ns.Color(strip, T.accent)
-    table.insert(UISpecialFrames, "UERMessageBox")
+    table.insert(UISpecialFrames, "EverFrameMessageBox")
     box.title = Text(box, 14)
     box.title:SetPoint("TOPLEFT", 16, -14)
     ns.Color(box.title, T.accent)

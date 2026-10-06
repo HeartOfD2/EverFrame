@@ -2,7 +2,7 @@
 -- Templates: your own macro templates (account-wide), sorted into groups.
 -- Create, edit and delete them, turn one into a macro, and share them as one
 -- line of text (names are unique across all groups):
---   Export   pick templates or whole groups, copy the code ("UER2:" + Base64)
+--   Export   pick templates or whole groups, copy the code ("EF2:" + Base64)
 --   Import   paste a code, look at what it holds, import the ticked ones;
 --            names that exist already ask before they are overwritten
 -- Modules bring default templates (ns.Macros.RegisterTemplates); they are
@@ -373,7 +373,7 @@ BuildTransfer = function(p)
             exportTitle = L["Export templates"],
             importTitle = L["Import templates"],
             empty = L["No templates yet."],
-            invalid = L["That is no template code (it starts with UER2: or UER1:)."],
+            invalid = L["That is no template code (it starts with EF2:)."],
             found = L["%d templates in the code. Untick what you don't want."],
             clashTitle = L["Templates exist already"],
             clashText = L["These templates exist already:\n%s\n\nOverwrite them with the imported ones?"],

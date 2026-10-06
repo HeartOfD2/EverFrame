@@ -3,7 +3,7 @@
 -- addon's style. General and character macros, sorted into groups of your
 -- own (general: account-wide, character: per character), an icon picker that
 -- searches spell and item names (in the client language), drag-to-action-bar,
--- and export / import as one line of text ("UERM1:" + Base64).
+-- and export / import as one line of text ("EFM1:" + Base64).
 -- Templates have their own page (Templates.lua). The game blocks macro writes
 -- in combat, so every write is guarded.
 --   ns.Macros.RegisterTemplates(group)  default templates of a module: { key,
@@ -124,7 +124,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Page (built at load, moved into the app window the first time it opens)
 -- ---------------------------------------------------------------------------
-local mm = CreateFrame("Frame", "UERMacroManager", UIParent)
+local mm = CreateFrame("Frame", "EverFrameMacroManager", UIParent)
 mm:SetSize(PAGE_W, PAGE_H)
 mm:Hide()
 Macros.page = mm
@@ -596,7 +596,7 @@ local ICON, IGAP = 30, 4
 local COLS = math.floor((PAGE_W - 12 + IGAP) / (ICON + IGAP))
 local GRID_TOP = -64
 local IROWS = math.floor((PAGE_H + GRID_TOP - 24 + IGAP) / (ICON + IGAP))
-local picker = CreateFrame("Frame", "UERMacroIconPicker", mm)
+local picker = CreateFrame("Frame", "EverFrameMacroIconPicker", mm)
 picker:SetAllPoints(mm)
 picker:SetFrameLevel(mm:GetFrameLevel() + 20)
 picker:EnableMouse(true)
@@ -914,7 +914,7 @@ local transfer = ns.Transfer.Build(mm, {
         exportTitle = L["Export macros"],
         importTitle = L["Import macros"],
         empty = L["No macros here yet"],
-        invalid = L["That is no macro code (it starts with UERM1:)."],
+        invalid = L["That is no macro code (it starts with EFM1:)."],
         found = L["%d macros in the code. Untick what you don't want."],
         clashTitle = L["Macros exist already"],
         clashText = L["These macros exist already:\n%s\n\nOverwrite them with the imported ones?"],

@@ -320,7 +320,7 @@ end)
 -- Changed gear: { Outdated() -> { names }, Update() -> { updated names } }
 -- ---------------------------------------------------------------------------
 function Placeholders.RegisterGearMacros(src) table.insert(Placeholders.gearSources, src) end
--- extra jobs for /uer update (the rogue's built-in macros)
+-- extra jobs for /ef update (the rogue's built-in macros)
 function Placeholders.RegisterUpdater(fn) table.insert(Placeholders.updaters, fn) end
 
 local function GearOutdated()
@@ -350,7 +350,7 @@ function Placeholders.UpdateGearMacros()
     if Placeholders.RefreshPage then Placeholders.RefreshPage() end
 end
 
--- everything: templates, the modules' own macros (Placeholders page, /uer update)
+-- everything: templates, the modules' own macros (Placeholders page, /ef update)
 function Placeholders.UpdateAll()
     if ns.Templates then ns.Templates.UpdateMacros() end
     for _, fn in ipairs(Placeholders.updaters) do fn() end
@@ -369,7 +369,7 @@ end
 -- ---------------------------------------------------------------------------
 local dlg, draft
 local function BuildDialog()
-    dlg = UI.Window("UERGearDialog", 470, 236, L["New gear"], { strata = "FULLSCREEN_DIALOG" })
+    dlg = UI.Window("EverFrameGearDialog", 470, 236, L["New gear"], { strata = "FULLSCREEN_DIALOG" })
     dlg.text = UI.Hint(dlg, "", 442)
     dlg.text:SetPoint("TOPLEFT", 14, -36)
     ns.Color(dlg.text, T.text)

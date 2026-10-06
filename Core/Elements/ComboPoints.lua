@@ -59,8 +59,8 @@ end
 
 -- shapes of the points and what happens when all points are full
 local SHAPE_FILE = {
-    circles  = "Interface\\AddOns\\UltimateEverRogue\\Media\\Circle",
-    diamonds = "Interface\\AddOns\\UltimateEverRogue\\Media\\Diamond",
+    circles  = "Interface\\AddOns\\" .. ns.ADDON .. "\\Media\\Circle",
+    diamonds = "Interface\\AddOns\\" .. ns.ADDON .. "\\Media\\Diamond",
 }
 ns.COMBO_SHAPES = { "bars", "circles", "diamonds" }
 ns.COMBO_EFFECTS = { "glow", "pulse", "wave", "none" }
@@ -144,11 +144,12 @@ local function MakePip(parent, shape)
     p.file = file
     if file then
         p.edge = Overlay(p, "BACKGROUND", -7, file, 1)       -- outline: the shape, 1 px larger
-        p.edge:SetVertexColor(unpack(T.hudLine))
+        HUD:AddEdgeTexture(p.edge, "combo")
         p.track = Overlay(p, "BACKGROUND", -6, file, 0)
         p.track:SetVertexColor(unpack(T.hudTrack))
     else
         ns.Skin(p, T.hudTrack, T.hudLine)
+        HUD:AddEdge(p, "combo")
     end
     p.glow = Overlay(p, "BACKGROUND", -8, file, file and 3 or 2)   -- halo just outside
     p.glow:SetBlendMode("ADD")

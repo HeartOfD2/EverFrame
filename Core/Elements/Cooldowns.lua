@@ -45,7 +45,7 @@ local Apply   -- puts the game's current cooldown of an entry on its swipe (belo
 
 local function Paint(e)
     local o, st = e.frame, e.state
-    local c = (st == "buff") and T.accent or T.hudLine
+    local c = (st == "buff") and T.accent or HUD:EdgeColor("cd" .. CD:Bar(e.key))
     o.border:SetColorTexture(c[1], c[2], c[3], c[4] or 1)
     o.halo:SetShown(st == "buff")
     -- optional: ready icons step back, running ones stand out
@@ -468,6 +468,8 @@ HUD:RegisterSharedStyle("cooldowns", { iconSize = 28, numbers = true, dimReady =
         Paint(e)
     end
 end)
+
+HUD:OnEdges(function() for _, e in pairs(CD.entries) do Paint(e) end end)
 
 for b = 1, BARS do
     HUD:Register({

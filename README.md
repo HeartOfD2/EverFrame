@@ -1,10 +1,10 @@
-<p align="center"><img src="docs/logo.png" width="180" alt="Ultimate EverRogue"></p>
+<p align="center"><img src="docs/logo.png" width="220" alt="EverFrame"></p>
 
-<h1 align="center">Ultimate EverRogue</h1>
+<h1 align="center">EverFrame</h1>
 
-<p align="center">A compact combat frame, macro tools and player notes for <b>World of Warcraft: Forever</b>.</p>
+<p align="center"><b>Compact Combat Frame with Extras</b> for <b>World of Warcraft: Forever</b>: one frame for every class, plus macro tools and player notes.<br><sub>Formerly Ultimate EverRogue.</sub></p>
 
-<p align="center"><img src="docs/screenshots/combat-frame.png" width="720" alt="The combat frame"></p>
+<p align="center"><img src="docs/screenshots/in-game.png" width="720" alt="EverFrame in the game: combat frame and sticky notes"></p>
 
 Health, resource, combo points, range and cooldowns in one movable frame, plus a macro manager with templates and player notes, all in one settings window. Class features come as modules; the **rogue module** adds a poison tracker with one-click apply, a Slice and Dice timer and weapon macros that keep themselves up to date.
 
@@ -21,27 +21,31 @@ Works for every class and in every client language: spell and item names are alw
 - **Look:** dark and light mode, teal, amber or blue accent.
 
 <p align="center">
+<img src="docs/screenshots/combat-frame.png" width="400" alt="The combat frame">
 <img src="docs/screenshots/templates.png" width="400" alt="Macro templates">
 <img src="docs/screenshots/notes.png" width="400" alt="Notes and sticky notes">
+<img src="docs/screenshots/player-notes.png" width="400" alt="Notes on players">
 </p>
 
 ## Installation
 
-Install it with the CurseForge app, or download a release and unpack it into the `Interface/AddOns` folder of your WoW: Forever installation. The folder must be named `UltimateEverRogue`.
+Install it with the CurseForge app, or download a release and unpack it into the `Interface/AddOns` folder of your WoW: Forever installation. The folder must be named `EverFrame`.
 
-In game, type `/uer` to open the settings window; `/uer help` lists all commands.
+**Coming from Ultimate EverRogue?** Delete the old `UltimateEverRogue` folder. EverFrame starts with fresh settings.
+
+In game, type `/ef` (or `/everframe`) to open the settings window; `/ef help` lists all commands.
 
 ## Feedback
 
-Bugs and ideas are welcome as [issues](https://github.com/HeartOfD2/Ultimate-EverRogue/issues). Please add your class, the client language and what `/uer status` shows.
+Bugs and ideas are welcome as [issues](https://github.com/HeartOfD2/EverFrame/issues). Please add your class, the client language and what `/ef status` shows.
 
 ## Credits
 
-Inspired by **RogueEnergyCombo** by [Goldfire86](https://www.curseforge.com/members/goldfire86). Ultimate EverRogue is written from scratch and shares no code with it.
+Inspired by **RogueEnergyCombo** by [Goldfire86](https://www.curseforge.com/members/goldfire86). EverFrame is written from scratch and shares no code with it.
 
 ## Deutsch
 
-Eine kompakte Kampfanzeige für **WoW: Forever**: Leben, Ressource, Combo-Punkte, Reichweite und Cooldowns in einem Rahmen, dazu ein Makro-Manager mit Vorlagen und Platzhaltern, Spielernotizen und Haftnotizen – alles in einem Einstellungsfenster. Das Schurken-Modul bringt eine Gift-Anzeige mit Auftragen per Klick, einen Zerhäckseln-Timer und Waffen-Makros, die sich selbst aktuell halten. Die Oberfläche gibt es auf Deutsch und Englisch; Zauber- und Itemnamen kommen immer aus dem Spiel. Im Spiel öffnet `/uer` die Einstellungen.
+**EverFrame** (früher Ultimate EverRogue) ist eine kompakte Kampfanzeige für **WoW: Forever**: Leben, Ressource, Combo-Punkte, Reichweite und Cooldowns in einem Rahmen, dazu ein Makro-Manager mit Vorlagen und Platzhaltern, Spielernotizen und Haftnotizen – alles in einem Einstellungsfenster. Das Schurken-Modul bringt eine Gift-Anzeige mit Auftragen per Klick, einen Zerhäckseln-Timer und Waffen-Makros, die sich selbst aktuell halten. Die Oberfläche gibt es auf Deutsch und Englisch; Zauber- und Itemnamen kommen immer aus dem Spiel. Im Spiel öffnet `/ef` die Einstellungen. Wer von Ultimate EverRogue kommt, löscht den alten Ordner `UltimateEverRogue`; EverFrame beginnt mit neuen Einstellungen.
 
 ## License
 

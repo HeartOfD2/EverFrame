@@ -8,7 +8,7 @@ local L = ns.L
 
 local function DB() return ns.Acct().minimap end
 
-local btn = CreateFrame("Button", "UERMinimapButton", Minimap)
+local btn = CreateFrame("Button", "EverFrameMinimapButton", Minimap)
 btn:SetSize(31, 31)
 btn:SetFrameStrata("MEDIUM")
 btn:SetFrameLevel(8)
@@ -96,7 +96,7 @@ function ns.IsMinimapButtonShown() return not DB().hide end
 function ns.SetMinimapButtonShown(show)
     DB().hide = not show
     btn:SetShown(show and true or false)
-    if not show then ns.Print(L["Minimap button hidden. /uer minimap brings it back."]) end
+    if not show then ns.Print(L["Minimap button hidden. /ef minimap brings it back."]) end
 end
 
 -- addon compartment (the addon list next to the minimap), where the client
@@ -132,7 +132,7 @@ local function Apply()
 end
 ns.On("LOGIN", Apply)
 
--- for /uer status: what is saved and what shows
+-- for /ef status: what is saved and what shows
 function ns.MinimapState()
     return DB().hide and true or false, btn:IsShown() and true or false, compartmentDone
 end

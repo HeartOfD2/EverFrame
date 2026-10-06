@@ -255,7 +255,7 @@ local function Family(size, flags)
         for _, s in ipairs(OTHER_SCRIPTS) do
             members[#members + 1] = { alphabet = s[1], file = s[2], height = size, flags = flags }
         end
-        local name = ("UERFont%d%s"):format(size, (flags:gsub("%W", "")))
+        local name = ("EverFrameFont%d%s"):format(size, (flags:gsub("%W", "")))
         local ok, fam = pcall(CreateFontFamily, name, members)
         families[key] = (ok and fam) or false
     end

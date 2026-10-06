@@ -20,7 +20,7 @@ ns.Stickies = Stickies
 
 local BAR_H, FOOT_H, PAD = 26, 24, 10
 local MIN_W, MIN_H = 160, 90
-local MEDIA = "Interface\\AddOns\\UltimateEverRogue\\Media\\"
+local MEDIA = "Interface\\AddOns\\" .. ns.ADDON .. "\\Media\\"
 Stickies.DEFAULTS = { w = 240, h = 200, size = 12 }
 
 function Stickies.Settings()
@@ -222,7 +222,7 @@ local layer = Notes.Layer("stickies")
 
 local function Create()
     local i = #frames + 1
-    local f = CreateFrame("Frame", "UERSticky" .. i, layer)
+    local f = CreateFrame("Frame", "EverFrameSticky" .. i, layer)
     f:SetFrameStrata("MEDIUM")
     f:SetToplevel(true)
     f:SetMovable(true)

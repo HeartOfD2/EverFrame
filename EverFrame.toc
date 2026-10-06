@@ -1,17 +1,17 @@
 ## Interface: 16001
-## Title: Ultimate EverRogue
+## Title: EverFrame
 ## Notes: Combat frame for health, resource, combo points, range and cooldowns, plus macro manager, player notes and a rogue module.
 ## Notes-deDE: Kampfanzeige für Leben, Ressource, Combo-Punkte, Reichweite und Cooldowns, dazu Makro-Manager, Spielernotizen und ein Schurken-Modul.
 ## Author: HeartOfD2
 ## Version: @project-version@
 ## X-License: MIT
 ## X-Curse-Project-ID: 1729015
-## X-Website: https://github.com/HeartOfD2/Ultimate-EverRogue
-## IconTexture: Interface\AddOns\UltimateEverRogue\Media\Icon
+## X-Website: https://github.com/HeartOfD2/EverFrame
+## IconTexture: Interface\AddOns\EverFrame\Media\Icon
 ## Category: Combat
 ## Category-deDE: Kampf
-## SavedVariables: UltimateEverRogueDB
-## SavedVariablesPerCharacter: UltimateEverRogueCharDB
+## SavedVariables: EverFrameDB
+## SavedVariablesPerCharacter: EverFrameCharDB
 
 Core\Init.lua
 Locales\deDE.lua

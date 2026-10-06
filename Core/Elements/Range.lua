@@ -18,6 +18,7 @@ local range = HUD:Register({
     Build = function(self, parent)
         local r = CreateFrame("Frame", nil, parent)
         ns.Skin(r, T.hudTrack, T.hudLine)
+        HUD:AddEdge(r, "range")
         r.base = ns.HudText(r, 11)
         r.base:SetPoint("CENTER", 0, 0)
         self.region = r
